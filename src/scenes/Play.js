@@ -13,9 +13,16 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', './assets/rocket.png'); //key + file location
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
+        this.load.image('smallspaceship', './assets/smallspaceship.png');
 
         this.load.spritesheet('explosion', './assets/explosion.png', {
             frameWidth: 64,
+            frameHeight: 32,
+            startFrame: 0,
+            endFrame: 9
+        });
+        this.load.spritesheet('smallexplosion', './assets/smallexplosion.png', {
+            frameWidth: 32,
             frameHeight: 32,
             startFrame: 0,
             endFrame: 9
@@ -48,6 +55,10 @@ class Play extends Phaser.Scene {
         borderUISize * 5 + borderPadding * 2,'spaceship', 0, 20).setOrigin(0,0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize * 6 + borderPadding * 4,
         'spaceship', 0, 10).setOrigin(0,0);
+
+        //add smallspaceship
+        this.smallship = new SmallSpaceship(this, game.config.width + borderUISize * 6, borderUISize * 4, 
+        'smallspaceship', 0, 50).setOrigin(0,0);
         
 
         //define keys
@@ -60,6 +71,16 @@ class Play extends Phaser.Scene {
         this.anims.create({
             key: 'explode',
             frames: this.anims.generateFrameNumbers('explosion', {
+                start: 0,
+                end: 9,
+                first: 0
+            }),
+            frameRate: 30
+        });
+
+        this.anims.create({
+            key: 'smallexplode',
+            frames: this.anims.generateFrameNumbers('smallexplosion', {
                 start: 0,
                 end: 9,
                 first: 0
@@ -114,6 +135,9 @@ class Play extends Phaser.Scene {
             this.ship01.update();
             this.ship02.update();
             this.ship03.update();
+
+            //update smallspaceship
+            this.smallship.update();
         }
 
         //check collision
@@ -128,6 +152,10 @@ class Play extends Phaser.Scene {
         if (this.checkCollision(this.p1Rocket, this.ship03)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship03);
+        }
+        if (this.checkCollision(this.p1Rocket, this.smallship)) {
+            this.p1Rocket.reset();
+            this.shipSmallExplode(this.smallship);
         }
     }
 
@@ -157,5 +185,21 @@ class Play extends Phaser.Scene {
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
         this.sound.play('sfx_explosion');
+    }
+
+    shipSmallExplode(ship) {
+        //temporarily hide the ship
+        ship.alpha = 0;
+        //create explosion sprite
+        let boom = this.add.sprite(ship.x, ship.y, 'smallexplosion').setOrigin(0, 0);
+        boom.anims.play('smallexplode');
+        boom.on('animationcomplete', () => {
+            ship.reset();
+            ship.alpha = 1;
+            boom.destroy();
+        });
+        this.p1Score += ship.points;
+        this.scoreLeft.text = this.p1Score;
+        this.sound.play('sfx_explosion');        
     }
 }
