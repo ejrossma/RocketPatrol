@@ -66,49 +66,18 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 30
         });
-
-        //initialize score
-        this.p1Score = 0;
-
-        let scoreConfig = {
-            fontFamily: 'Courier',
-            fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
-            align: 'right',
-            padding: {
-                top: 5,
-                bottom: 5,
-            },
-            fixedWidth: 100
-        }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, 
-        this.p1Score, scoreConfig);
-        
-        //GAME OVER flag
-        this.gameOver = false;
-
-        //60 second play clock
-        scoreConfig.fixedWidth = 0;
-        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
-            this.gameOver = true;
-        }, null, this);
     }
 
     update() {
         this.starfield.tilePositionX -= starspeed;
 
-        if (!this.gameOver) {
-            // update rocket
-            this.p1Rocket.update();
+        // update rocket
+        this.p1Rocket.update();
 
-            //update spaceship
-            this.ship01.update();
-            this.ship02.update();
-            this.ship03.update();
-        }
+        //update spaceship
+        this.ship01.update();
+        this.ship02.update();
+        this.ship03.update();
 
         //check collision
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
@@ -148,8 +117,5 @@ class Play extends Phaser.Scene {
             ship.alpha = 1;
             boom.destroy();
         });
-        this.p1Score += ship.points;
-        this.scoreLeft.text = this.p1Score;
-        this.sound.play('sfx_explosion');
     }
 }
