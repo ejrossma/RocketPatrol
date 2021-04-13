@@ -10,7 +10,6 @@ class Menu extends Phaser.Scene {
 
     create() {
         this.add.text(20,20,"Rocket Patrol Menu");
-<<<<<<< HEAD
     }
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
@@ -31,11 +30,6 @@ class Menu extends Phaser.Scene {
             this.sound.play('sfx_select');
             this.scene.start('playScene');
         }
-=======
-
-        //change scenes
-        this.scene.start("playScene");
->>>>>>> parent of b3ceaab (Finished Game)
     }
 }
 
