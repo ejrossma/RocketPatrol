@@ -47,7 +47,8 @@ class Play extends Phaser.Scene {
         this.ship02 = new Spaceship(this, game.config.width + borderUISize * 3, 
         borderUISize * 5 + borderPadding * 2,'spaceship', 0, 20).setOrigin(0,0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize * 6 + borderPadding * 4,
-        'spaceship', 0, 10).setOrigin(0,0);    
+        'spaceship', 0, 10).setOrigin(0,0);
+        
 
         //define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
@@ -99,13 +100,15 @@ class Play extends Phaser.Scene {
     update() {
         this.starfield.tilePositionX -= starspeed;
 
-        // update rocket
-        this.p1Rocket.update();
+        if (!this.gameOver) {
+            // update rocket
+            this.p1Rocket.update();
 
-        //update spaceship
-        this.ship01.update();
-        this.ship02.update();
-        this.ship03.update();
+            //update spaceship
+            this.ship01.update();
+            this.ship02.update();
+            this.ship03.update();
+        }
 
         //check collision
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
@@ -145,5 +148,8 @@ class Play extends Phaser.Scene {
             ship.alpha = 1;
             boom.destroy();
         });
+        this.p1Score += ship.points;
+        this.scoreLeft.text = this.p1Score;
+        this.sound.play('sfx_explosion');
     }
 }
